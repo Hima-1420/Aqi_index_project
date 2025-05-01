@@ -121,25 +121,26 @@ function AirQualityMap({ latitude, longitude, aqi }: { latitude: number, longitu
     })
   }
 
+  // Update the fetchNearbyAQI function:
   const fetchNearbyAQI = async (lat: number, lon: number) => {
-    try {
-      const response = await fetch(
-        `https://api.waqi.info/map/bounds/?latlng=${lat-1},${lon-1},${lat+1},${lon+1}&token=1b8317418438c9635ca986176d79907d539026b4`
-      )
-      const data = await response.json()
-      
-      if (data.status === "ok" && data.data) {
-        return data.data.map((station: any) => ({
-          lat: station.lat,
-          lon: station.lon,
-          aqi: station.aqi
-        }))
-      }
-      return []
-    } catch (err) {
-      console.error("Error fetching nearby stations:", err)
-      return []
+  try {
+    const response = await fetch(
+      `https://api.waqi.info/map/bounds/?latlng=${lat-1},${lon-1},${lat+1},${lon+1}&token=${process.env.NEXT_PUBLIC_WAQI_TOKEN}`
+    )
+    const data = await response.json()
+    
+    if (data.status === "ok" && data.data) {
+      return data.data.map((station: any) => ({
+        lat: station.lat,
+        lon: station.lon,
+        aqi: station.aqi
+      }))
     }
+    return []
+  } catch (err) {
+    console.error("Error fetching nearby stations:", err)
+    return []
+  }
   }
 
   useEffect(() => {
@@ -296,8 +297,12 @@ function HistoricalDataChart({ location }: { location: LocationData | null }) {
         const end = Math.floor(Date.now() / 1000)
         const start = end - 7 * 24 * 60 * 60
         
+        // Remove this hardcoded declaration:
+        // const OWM_API_KEY = "66db0c6525cad55de2b9b2f1a1266af7"
+        
+        // Update the fetch URL:
         const response = await fetch(
-          `http://api.openweathermap.org/data/2.5/air_pollution/history?lat=${location.lat}&lon=${location.lon}&start=${start}&end=${end}&appid=${OWM_API_KEY}`
+          `http://api.openweathermap.org/data/2.5/air_pollution/history?lat=${location.lat}&lon=${location.lon}&start=${start}&end=${end}&appid=${process.env.NEXT_PUBLIC_OWM_API_KEY}`
         )
         const data = await response.json()
         
@@ -789,3 +794,7 @@ export default function AirQualityDashboard() {
     </div>
   )
 }
+
+// Add this at the top of your file
+console.log('WAQI Token:', process.env.NEXT_PUBLIC_WAQI_TOKEN)
+console.log('OWM API Key:', process.env.NEXT_PUBLIC_OWM_API_KEY)
