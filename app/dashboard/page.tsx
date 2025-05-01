@@ -6,6 +6,8 @@ import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import Chart from "chart.js/auto"
 
+import dynamic from 'next/dynamic'
+
 interface AirQualityData {
   aqi: number
   pm25: number
@@ -794,7 +796,3 @@ export default function AirQualityDashboard() {
     </div>
   )
 }
-
-// Add this at the top of your file
-console.log('WAQI Token:', process.env.NEXT_PUBLIC_WAQI_TOKEN)
-console.log('OWM API Key:', process.env.NEXT_PUBLIC_OWM_API_KEY)
